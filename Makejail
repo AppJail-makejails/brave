@@ -1,0 +1,35 @@
+INCLUDE options/image-options.makejail
+
+ARG brave_tag=latest
+ARG brave_display=:0
+ARG brave_pulse_server=unix:/tmp/pulse-native
+
+FROM --entrypoint gh+AppJail-makejails/brave brave:${brave_tag}
+
+INCLUDE pkgs-host.makejail
+INCLUDE hosts.makejail
+
+CMD --local mkdir -p /usr/local/bin
+CMD --local install -m 555 files/brave-appjail.in /usr/local/bin/brave-appjail
+CMD --local sed -i '' -Ee "s/%%JAILNAME%%/${APPJAIL_JAILNAME}/" /usr/local/bin/brave-appjail
+CMD --local sed -i '' -Ee "s/%%DISPLAY%%/${brave_display}/" /usr/local/bin/brave-appjail
+CMD --local sed -i '' -Ee "s#%%PULSE_SERVER%%#${brave_pulse_server}#" /usr/local/bin/brave-appjail
+
+RAW for d in 48 128 16 24 256 32 64; do
+	RAW mkdir -p /usr/local/share/icons/hicolor/${d}x${d}/apps
+	RAW cp ${APPJAIL_JAILDIR}/usr/share/icons/hicolor/${d}x${d}/apps/brave-browser.png \
+				/usr/local/share/icons/hicolor/${d}x${d}/apps
+RAW done
+
+CMD --local mkdir -p /usr/local/share/applications
+CMD --local cp files/brave-appjail.desktop /usr/local/share/applications
+
+CMD --local mkdir -p /usr/local/etc/rc.d
+CMD --local cp files/pulseaudio.in /usr/local/etc/rc.d
+CMD --local chmod +x /usr/local/etc/rc.d/pulseaudio
+
+STOP
+
+STAGE create
+
+CMD --local xhost +

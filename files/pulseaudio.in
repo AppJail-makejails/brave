@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# PROVIDE: pulseaudio
+# REQUIRE: DAEMON FILESYSTEMS
+# KEYWORD: nojail shutdown
+
+. /etc/rc.subr
+
+name="pulseaudio"
+desc="Sound server for UNIX"
+rcvar="pulseaudio_enable"
+
+load_rc_config "${name}"
+
+: ${pulseaudio_enable:=NO}
+: ${pulseaudio_flags:=-D --system --disallow-module-loading --disallow-exit}
+
+pulseaudio_pidfile="/var/run/pulse/pid"
+
+command="/usr/local/bin/pulseaudio"
+
+run_rc_command "$1"

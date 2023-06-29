@@ -1,0 +1,11 @@
+#!/bin/sh
+
+appjail-user cmd jexec "${BRAVE_JAIL:-%%JAILNAME%%}" \
+	sudo -iu brave env DISPLAY="${DISPLAY:-%%DISPLAY%%}" PULSE_SERVER="${PULSE_SERVER:-%%PULSE_SERVER%%}" \
+		/opt/brave.com/brave/brave-browser \
+			--no-sandbox \
+			--in-process-gpu \
+			--no-zygote \
+			--test-type \
+			--v=0 \
+			"$@"

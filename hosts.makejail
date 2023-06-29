@@ -1,0 +1,3 @@
+# For sudo(8).
+COPY etc
+REPLACE /etc/hosts HOSTNAME "${APPJAIL_JAILNAME}${HOST_DOMAIN}"
