@@ -164,7 +164,7 @@ appjail image export brave
 4. To use the webcam you need `multimedia/webcamd` installed on the host.
 5. Audio, webcam, microphone and DRM have been tested.
 6. This Makejail install `brave-appjail`, `brave-appjail.desktop` and Brave's icons.
-7. This Makejail install an rc script run Pulseaudio at startup.
+7. This Makejail install an rc script to run Pulseaudio at startup.
 8. The `/tmp` directory will be mounted on the jail.
 9. `sudo(8)` is used in the jail to execute commands as the `brave` user. Note that `sudo(8)` relies on the hostname, so any change must be reflected in the `/etc/hosts` of the jail. This Makejail already correctly sets a hostname.
 
