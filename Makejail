@@ -25,7 +25,7 @@ CMD --local mkdir -p /usr/local/share/applications
 CMD --local cp files/brave-appjail.desktop /usr/local/share/applications
 
 CMD --local mkdir -p /usr/local/etc/rc.d
-CMD --local cp files/pulseaudio.in /usr/local/etc/rc.d
+CMD --local cp files/pulseaudio.in /usr/local/etc/rc.d/pulseaudio
 CMD --local chmod +x /usr/local/etc/rc.d/pulseaudio
 
 STOP
