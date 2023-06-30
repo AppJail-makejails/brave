@@ -148,7 +148,7 @@ appjail image export brave
 ### Arguments
 
 * `brave_enable_3d` (default: `1`): Add the `brave` user to the `video` group.
-* `brave_enable_webcamd` (default: `0`): Create a groupd named `webcamd` (GID: `145`) and add the `brave` user to it.
+* `brave_enable_webcamd` (default: `0`): Create a group named `webcamd` (GID: `145`) and add the `brave` user to it.
 
 ## Tags
 
