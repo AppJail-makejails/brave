@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # PROVIDE: pulseaudio
-# REQUIRE: DAEMON FILESYSTEMS
+# REQUIRE: dbus
 # KEYWORD: nojail shutdown
 
 . /etc/rc.subr

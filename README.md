@@ -103,6 +103,10 @@ load-module module-native-protocol-unix auth-anonymous=1 socket=/tmp/pulse-nativ
 Now enable and start it:
 
 ```console
+# sysrc dbus_enable="YES"
+dbus_enable:  -> YES
+# service dbus start
+Starting dbus.
 # sysrc pulseaudio_enable="YES"
 pulseaudio_enable:  -> YES
 # service pulseaudio start
@@ -110,6 +114,8 @@ Starting pulseaudio.
 N: [(null)] main.c: Running in system mode, forcibly disabling SHM mode.
 N: [(null)] main.c: Running in system mode, forcibly disabling exit idle time.
 ```
+
+**Note**: The socket is created even if D-Bus is not started, but to avoid the message `Unable to contact D-Bus`, it is recommended.
 
 You should have the `/tmp/pulse-native` socket.
 
