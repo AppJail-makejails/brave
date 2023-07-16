@@ -158,9 +158,9 @@ appjail image export brave
 
 ## Tags
 
-| Tag | Arch | Version | `brave_enable_3d` | `brave_enable_webcamd` |
-| --- | --- | --- | --- | --- |
-| `latest` | `amd64` | `bionic` | 1 | 1 |
+| Tag      | Arch    | Version | `brave_enable_3d` | `brave_enable_webcamd` |
+| -------- | ------- | ------- | ----------------- | ---------------------- |
+| `latest` | `amd64` | `jammy` |         1         |           1            |
 
 ## Notes
 
