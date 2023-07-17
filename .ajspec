@@ -1,8 +1,8 @@
 tags: latest
 latest.arch: amd64
 latest.name: "brave"
-latest.timestamp.amd64: 1688057187
-latest.sum.amd64: 6fbd9f5d8c02195cf6f075f67f609a05ce978e253d5091d7391c8c78f2c8a853
-latest.size.amd64: 237151952
-latest.source.amd64: https://dtxdf.duckdns.org/G0Y9r7zdzd/brave_latest_amd64_image_appjail
-latest.source.amd64+: https://anonget.onrender.com/G0Y9r7zdzd/brave_latest_amd64_image_appjail
+latest.timestamp.amd64: 1689573990
+latest.sum.amd64: ffe4df0775e343c9cc20780a18c4478ab0aab1c45c7a04aff09c013b1285bbd9
+latest.size.amd64: 301448288
+latest.source.amd64: https://dtxdf.duckdns.org/G8u7C824za/brave_latest_amd64_image_appjail
+latest.source.amd64+: https://anonget.onrender.com/G8u7C824za/brave_latest_amd64_image_appjail
