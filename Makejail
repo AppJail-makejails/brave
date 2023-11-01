@@ -2,18 +2,24 @@ INCLUDE options/image-options.makejail
 
 ARG brave_tag=latest
 ARG brave_display=:0
-ARG brave_pulse_server=unix:/tmp/pulse-native
+ARG brave_enable_3d=1
+ARG brave_enable_webcamd=1
+ARG brave_tz=UTC
 
 FROM --entrypoint gh+AppJail-makejails/brave brave:${brave_tag}
 
 INCLUDE pkgs-host.makejail
 INCLUDE hosts.makejail
 
+CMD useradd -d /var/spool/brave brave
+CMD mkdir -p /var/spool/brave
+CMD chown brave:brave /var/spool/brave
+
 CMD --local mkdir -p /usr/local/bin
 CMD --local install -m 555 files/brave-appjail.in /usr/local/bin/brave-appjail
 CMD --local sed -i '' -Ee "s/%%JAILNAME%%/${APPJAIL_JAILNAME}/" /usr/local/bin/brave-appjail
 CMD --local sed -i '' -Ee "s/%%DISPLAY%%/${brave_display}/" /usr/local/bin/brave-appjail
-CMD --local sed -i '' -Ee "s#%%PULSE_SERVER%%#${brave_pulse_server}#" /usr/local/bin/brave-appjail
+CMD --local sed -i '' -Ee "s/%%TZ%%/${brave_tz}/" /usr/local/bin/brave-appjail
 
 RAW for d in 48 128 16 24 256 32 64; do
 	RAW mkdir -p /usr/local/share/icons/hicolor/${d}x${d}/apps
@@ -24,12 +30,29 @@ RAW done
 CMD --local mkdir -p /usr/local/share/applications
 CMD --local cp files/brave-appjail.desktop /usr/local/share/applications
 
-CMD --local mkdir -p /usr/local/etc/rc.d
-CMD --local cp files/pulseaudio.in /usr/local/etc/rc.d/pulseaudio
-CMD --local chmod +x /usr/local/etc/rc.d/pulseaudio
+RAW mkdir -m 755 -p "${HOME}/.brave-pulse"
+RAW owner=`stat -f %u:%g "${HOME}"`
+RAW chown "${owner}" "${HOME}/.brave-pulse"
+MOUNT "${HOME}/.brave-pulse" /var/spool/brave/.pulse
+
+RAW if [ "${brave_enable_3d}" != 0 ]; then
+	CMD usermod -a -G video brave
+
+	DEVICE path 'dri' unhide
+	DEVICE path 'dri/*' unhide
+	DEVICE path 'drm' unhide
+	DEVICE path 'drm/*' unhide
+	DEVICE path 'pci' unhide
+RAW fi
+
+RAW if [ "${brave_enable_webcamd}" != 0 ]; then
+	CMD groupadd -g 145 webcamd
+	CMD usermod -a -G webcamd brave
+
+	DEVICE path 'usb' unhide
+	DEVICE path 'usb/*' unhide
+	DEVICE path 'cuse*' unhide
+	DEVICE path 'video*' unhide
+RAW fi
 
 STOP
-
-STAGE create
-
-CMD --local xhost +

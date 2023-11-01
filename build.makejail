@@ -1,10 +1,5 @@
-ARG brave_enable_3d=1
-ARG brave_enable_webcamd=0
-
-INCLUDE options/options.makejail
 INCLUDE gh+AppJail-makejails/ubuntu
-
-INCLUDE pkgs-host.makejail
+INCLUDE options/devices.makejail
 
 CMD echo "deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse" > /etc/apt/sources.list
 CMD echo "deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list
@@ -21,24 +16,6 @@ CMD echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stabl
 
 PKG --update
 PKG brave-browser
-
-# Dedicated user.
-CMD useradd -d /var/spool/brave brave
-CMD mkdir -p /var/spool/brave
-CMD chown brave:brave /var/spool/brave
-
-# 3D support
-RAW if [ "${brave_enable_3d}" != 0 ]; then
-	CMD usermod -a -G video brave
-RAW fi
-
-# webcam
-RAW if [ "${brave_enable_webcamd}" != 0 ]; then
-	CMD groupadd -g 145 webcamd
-	CMD usermod -a -G webcamd brave
-RAW fi
-
-INCLUDE hosts.makejail
 
 PKG --clean
 CMD rm -rf /var/lib/apt/lists/*

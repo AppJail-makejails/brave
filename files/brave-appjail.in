@@ -1,7 +1,20 @@
 #!/bin/sh
 
-appjail-user cmd jexec "${BRAVE_JAIL:-%%JAILNAME%%}" \
-	sudo -iu brave env DISPLAY="${DISPLAY:-%%DISPLAY%%}" PULSE_SERVER="${PULSE_SERVER:-%%PULSE_SERVER%%}" \
+PULSE_DIR="${HOME}/.brave-pulse"
+PULSE_SOCKET="${PULSE_DIR}/pulse-native"
+
+if [ ! -S "${PULSE_SOCKET}" ] || ! pulseaudio --check; then
+	pulseaudio --start --exit-idle-time=-1 -L "module-native-protocol-unix auth-anonymous=1 socket=${PULSE_SOCKET}"
+fi
+
+env DISPLAY="${DISPLAY:-%%DISPLAY%%}" xhost + > /dev/null || exit $?
+
+if ! appjail status -q "${BRAVE_JAIL:-%%JAILNAME%%}"; then
+	appjail start "${BRAVE_JAIL:-%%JAILNAME%%}" || exit $?
+fi
+
+appjail cmd jexec "${BRAVE_JAIL:-%%JAILNAME%%}" \
+	sudo -iu brave env DISPLAY="${DISPLAY:-%%DISPLAY%%}" TZ="${TZ:-%%TZ%%}" PULSE_SERVER="unix:/var/spool/brave/.pulse/pulse-native" \
 		/opt/brave.com/brave/brave-browser \
 			--no-sandbox \
 			--in-process-gpu \

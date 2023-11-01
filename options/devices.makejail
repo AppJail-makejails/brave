@@ -1,0 +1,5 @@
+OPTION device=include \$devfsrules_hide_all
+OPTION device=include \$devfsrules_unhide_basic
+OPTION device=include \$devfsrules_unhide_login
+OPTION device=path shm unhide
+OPTION device=path 'shm/*' unhide
