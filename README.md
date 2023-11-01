@@ -46,7 +46,7 @@ The other way is to run Brave from the application launcher.
 ## How to build the Image
 
 ```sh
-appjail makejail -j brave -f brave/build.makejail \
+appjail makejail -j brave -f "gh+AppJail-makejails/brave --file build.makejail" \
     -o alias \
     -o virtualnet=":appjail0 default" \
     -o nat \
