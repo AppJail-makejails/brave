@@ -12,7 +12,7 @@ wikipedia.org/wiki/Brave_(web_browser)
 appjail makejail -j brave -f gh+AppJail-makejails/brave \
     -o x11 \
     -o template=/usr/local/share/examples/appjail/templates/linux.conf \
-    -o alias
+    -o alias \
     -o virtualnet=":appjail0 default" \
     -o nat
 ```
