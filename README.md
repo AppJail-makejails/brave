@@ -72,6 +72,8 @@ appjail image export brave
 
 ### Known Issues
 
+**Attention**: At least in FreeBSD 14.0 the audio works fine.
+
 **Audio and microphone do not work**:
 
 The following error appears every time we try to play audio or use the microphone:
