@@ -41,7 +41,7 @@ The other way is to run Brave from the application launcher.
 * `brave_display` (default: `:0`): Which X server to connect it to. It can be changed at run time through the `DISPLAY` environment variable, but must be set each time `brave-appjail` is run.
 * `brave_enable_3d` (default: `1`): Add the `brave` user to the `video` group and enable the following devices: `dri`, `dri/*`, `drm`, `drm/*`, `pci`.
 * `brave_enable_webcamd` (default: `1`): Create a group named `webcamd` (GID: `145`) and add the `brave` user to it. This option also enable the following devices: `usb`, `usb/*`, `cuse*`, `video*`.
-* `brave_tz` (default: `UTC`): Default time zone used by Brave. You can change this at run time through the `TZ` environment variable, but must be set each time `brave-appjail` is run.
+* `brave_tz` (default: `auto`): Default time zone used by Brave. You can change this at run time through the `TZ` environment variable, but must be set each time `brave-appjail` is run. If set to `auto` the time zone is obtained using `/var/db/zoneinfo`.
 
 ## How to build the Image
 
