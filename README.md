@@ -8,6 +8,8 @@ wikipedia.org/wiki/Brave_(web_browser)
 
 ## How to use this Makejail
 
+**Attention**: The following scripts assumes that you have already configured AppJail to run with trusted users. If you have not already done so, read [Trusted Users](https://appjail.readthedocs.io/en/latest/trusted-users/). You should at least have `keepenv` in your `doas.conf(5)` to run the following scripts correctly.
+
 ```sh
 appjail makejail -j brave -f gh+AppJail-makejails/brave \
     -o x11 \
@@ -24,8 +26,6 @@ You can run Brave using `brave-appjail` which is already installed.
 ```sh
 brave-appjail
 ```
-
-**Attention**: The above script assumes that you have already configured AppJail to run with trusted users. If you have not already done so, read [Trusted Users](https://appjail.readthedocs.io/en/latest/trusted-users/).
 
 The other way is to run Brave from the application launcher.
 
