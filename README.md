@@ -43,18 +43,6 @@ The other way is to run Brave from the application launcher.
 * `brave_enable_webcamd` (default: `1`): Create a group named `webcamd` (GID: `145`) and add the `brave` user to it. This option also enable the following devices: `usb`, `usb/*`, `cuse*`, `video*`.
 * `brave_tz` (default: `auto`): Default time zone used by Brave. You can change this at run time through the `TZ` environment variable, but must be set each time `brave-appjail` is run. If set to `auto` the time zone is obtained using `/var/db/zoneinfo`.
 
-## How to build the Image
-
-```sh
-appjail makejail -j brave -f "gh+AppJail-makejails/brave --file build.makejail" \
-    -o alias \
-    -o virtualnet=":appjail0 default" \
-    -o nat \
-    -o template=/usr/local/share/examples/appjail/templates/linux.conf
-appjail stop brave
-appjail image export brave
-```
-
 ## Tags
 
 | Tag      | Arch    | Version |
