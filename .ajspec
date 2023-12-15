@@ -1,8 +1,8 @@
 tags+: latest
 latest.arch: amd64
 latest.name: "brave"
-latest.timestamp.amd64: 1701943794
-latest.sum.amd64: 526df813896bf09d66fd45092356c024a719d70da07a874951eb271cbef2f79e
-latest.size.amd64: 416005151
+latest.timestamp.amd64: 1702591499
+latest.sum.amd64: 1cabe0b54331a986cc5150687dac8fb5860b1a333a00a9e60a93fa4c6540b134
+latest.size.amd64: 309498520
 latest.source.amd64: "http://appjail.hpc.at/brave/latest-amd64-image.appjail"
 latest.source.amd64+: "https://images.all101bsd.download/brave/latest-amd64-image.appjail"
