@@ -19,7 +19,7 @@ CMD --local mkdir -p /usr/local/bin
 CMD --local install -m 555 files/brave-appjail.in /usr/local/bin/brave-appjail
 CMD --local sed -i '' -Ee "s/%%JAILNAME%%/${APPJAIL_JAILNAME}/" /usr/local/bin/brave-appjail
 CMD --local sed -i '' -Ee "s/%%DISPLAY%%/${brave_display}/" /usr/local/bin/brave-appjail
-CMD --local sed -i '' -Ee "s/%%TZ%%/${brave_tz}/" /usr/local/bin/brave-appjail
+CMD --local sed -i '' -Ee "s#%%TZ%%#${brave_tz}#" /usr/local/bin/brave-appjail
 
 RAW for d in 48 128 16 24 256 32 64; do
 	RAW mkdir -p /usr/local/share/icons/hicolor/${d}x${d}/apps
