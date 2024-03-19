@@ -78,8 +78,6 @@ The following error appears every time we try to play audio or use the microphon
 
 ## Acknowledgments
 
-This Makejail was not created without the help of
-
 * @mrclksr: [linux-browser-installer](https://github.com/mrclksr/linux-browser-installer).
 * [patovm04](https://forums.freebsd.org/members/patovm04.59820): [How to install Brave on FreeBSD 13.0+](https://forums.freebsd.org/threads/linuxlator-how-to-install-brave-linux-app-on-freebsd-13-0.78879).
 * [holger](https://forums.freebsd.org/members/holger.62671): [Running Google Chrome in a dedicated Linux-Jail](https://forums.freebsd.org/threads/running-google-chrome-in-a-dedicated-linux-jail.85491).
