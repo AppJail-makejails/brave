@@ -8,10 +8,10 @@ CMD echo "deb http://archive.ubuntu.com/ubuntu/ jammy-security main restricted u
 PKG --update
 PKG apt-transport-https curl gnupg pulseaudio
 
-CMD curl -s https://brave-browser-apt-release.s3.brave.com/brave-core.asc |\
-	apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -
+CMD curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+	https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
-CMD echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" |\
+CMD echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" |\
 	tee /etc/apt/sources.list.d/brave-browser-release.list
 
 PKG --update
