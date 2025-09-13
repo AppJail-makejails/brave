@@ -56,3 +56,11 @@ RAW if [ "${brave_enable_webcamd}" != 0 ]; then
 RAW fi
 
 STOP
+
+STAGE custom:uninstall_brave
+
+CMD --local rm -f /usr/local/bin/brave-appjail
+RAW for d in 48 128 16 24 256 32 64; do
+    CMD rm -f /usr/local/share/icons/hicolor/${d}x${d}/apps/brave-browser.png
+RAW done
+CMD --local rm -f /usr/local/share/applications/brave-appjail.desktop

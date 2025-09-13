@@ -35,7 +35,15 @@ The other way is to run Brave from the application launcher.
 
 **Read** [#notes](#notes) to get more information about this Makejail.
 
-### Arguments
+### Uninstall
+
+```
+appjail run -s uninstall_brave brave
+appjail stop brave
+appjail jail destroy -f brave
+```
+
+### Arguments (stage: build)
 
 * `brave_tag` (default: `latest`): see [#tags](#tags).
 * `brave_display` (default: `:0`): Which X server to connect it to. It can be changed at run time through the `DISPLAY` environment variable, but must be set each time `brave-appjail` is run.
