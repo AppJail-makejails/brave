@@ -4,35 +4,35 @@ PULSE_DIR="${HOME}/.brave-pulse"
 PULSE_SOCKET="${PULSE_DIR}/pulse-native"
 
 if ! pulseaudio --check; then
-    pulseaudio --start --exit-idle-time=-1
+	pulseaudio --start --exit-idle-time=-1
 fi
 
 if [ ! -S "${PULSE_SOCKET}" ]; then
-    pactl load-module module-native-protocol-unix auth-anonymous=1 socket="${PULSE_SOCKET}"
+	pactl load-module module-native-protocol-unix auth-anonymous=1 socket="${PULSE_SOCKET}"
 fi
 
 env DISPLAY="${DISPLAY:-%%DISPLAY%%}" xhost + > /dev/null || exit $?
 
 if ! appjail status -q "${BRAVE_JAIL:-%%JAILNAME%%}"; then
-    appjail start "${BRAVE_JAIL:-%%JAILNAME%%}" || exit $?
+	appjail start "${BRAVE_JAIL:-%%JAILNAME%%}" || exit $?
 fi
 
 DEFAULT_TZ="%%TZ%%"
 
 if [ "${DEFAULT_TZ}" = "auto" ]; then
-    if [ -f "/var/db/zoneinfo" ]; then
-        DEFAULT_TZ=`head -1 "/var/db/zoneinfo"` || exit $?
-    else
-        DEFAULT_TZ="UTC"
-    fi
+	if [ -f "/var/db/zoneinfo" ]; then
+		DEFAULT_TZ=`head -1 "/var/db/zoneinfo"` || exit $?
+	else
+		DEFAULT_TZ="UTC"
+	fi
 fi
 
 appjail cmd jexec "${BRAVE_JAIL:-brave}" \
-    sudo -iu brave env DISPLAY="${DISPLAY:-%%DISPLAY%%}" TZ="${TZ:-${DEFAULT_TZ}}" PULSE_SERVER="unix:/var/spool/brave/.pulse/pulse-native" \
-        /opt/brave.com/brave/brave-browser \
-            --no-sandbox \
-            --disable-gpu \
-            --no-zygote \
-            --test-type \
-            --v=0 \
-            "$@"
+	sudo -iu brave env DISPLAY="${DISPLAY:-%%DISPLAY%%}" TZ="${TZ:-${DEFAULT_TZ}}" PULSE_SERVER="unix:/var/spool/brave/.pulse/pulse-native" \
+		/opt/brave.com/brave/brave-browser \
+			--no-sandbox \
+			--in-process-gpu \
+			--no-zygote \
+			--test-type \
+			--v=0 \
+			"$@"
