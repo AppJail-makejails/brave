@@ -38,6 +38,7 @@ The other way is to run Brave from the application launcher.
 ### Uninstall
 
 ```
+appjail start brave
 appjail run -s uninstall_brave brave
 appjail stop brave
 appjail jail destroy -f brave
@@ -50,12 +51,13 @@ appjail jail destroy -f brave
 * `brave_enable_3d` (default: `1`): Add the `brave` user to the `video` group and enable the following devices: `dri`, `dri/*`, `drm`, `drm/*`, `pci`.
 * `brave_enable_webcamd` (default: `1`): Create a group named `webcamd` (GID: `145`) and add the `brave` user to it. This option also enable the following devices: `usb`, `usb/*`, `cuse*`, `video*`.
 * `brave_tz` (default: `auto`): Default time zone used by Brave. You can change this at run time through the `TZ` environment variable, but must be set each time `brave-appjail` is run. If set to `auto` the time zone is obtained using `/var/db/zoneinfo`.
+* `brave_ajspec` (default: `gh+AppJail-makejails/brave`): Entry point where the `appjail-ajspec(5)` file is located.
 
 ## Tags
 
 | Tag      | Arch    | Version |
 | -------- | ------- | ------- |
-| `latest` | `amd64` | `jammy` |
+| `latest` | `amd64` | `focal` |
 
 ## Notes
 
@@ -65,6 +67,7 @@ appjail jail destroy -f brave
 4. To use the webcam you need `multimedia/webcamd` installed on the host.
 5. This Makejail install `brave-appjail`, `brave-appjail.desktop` and Brave's icons.
 6. `sudo(8)` is used in the jail to execute commands as the `brave` user. Note that `sudo(8)` relies on the hostname, so any change must be reflected in the `/etc/hosts` of the jail. This Makejail already correctly sets a hostname.
+7. The jail is stopped every time Brave quits, but `brave-appjail` starts it again. This is a workaround to prevent Brave from crashing.
 
 ### Known Issues
 

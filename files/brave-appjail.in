@@ -31,8 +31,8 @@ appjail cmd jexec "${BRAVE_JAIL:-brave}" \
 	sudo -iu brave env DISPLAY="${DISPLAY:-%%DISPLAY%%}" TZ="${TZ:-${DEFAULT_TZ}}" PULSE_SERVER="unix:/var/spool/brave/.pulse/pulse-native" \
 		/opt/brave.com/brave/brave-browser \
 			--no-sandbox \
-			--in-process-gpu \
-			--no-zygote \
 			--test-type \
 			--v=0 \
 			"$@"
+
+appjail stop "${BRAVE_JAIL:-brave}"

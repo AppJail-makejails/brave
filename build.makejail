@@ -1,9 +1,14 @@
-INCLUDE gh+AppJail-makejails/ubuntu
+OPTION start
+OPTION overwrite=force
+OPTION osversion=focal
+OPTION type=linux+debootstrap
+OPTION linuxfs
+
 INCLUDE options/devices.makejail
 
-CMD echo "deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse" > /etc/apt/sources.list
-CMD echo "deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list
-CMD echo "deb http://archive.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list
+CMD echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse" > /etc/apt/sources.list
+CMD echo "deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse" >> /etc/apt/sources.list
+CMD echo "deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse" >> /etc/apt/sources.list
 
 PKG --update
 PKG apt-transport-https curl gnupg pulseaudio

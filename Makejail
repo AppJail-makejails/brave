@@ -5,8 +5,9 @@ ARG brave_display=:0
 ARG brave_enable_3d=1
 ARG brave_enable_webcamd=1
 ARG brave_tz=auto
+ARG brave_ajspec=gh+AppJail-makejails/brave
 
-FROM --entrypoint gh+AppJail-makejails/brave brave:${brave_tag}
+FROM --entrypoint "${brave_ajspec}" brave:${brave_tag}
 
 INCLUDE pkgs-host.makejail
 INCLUDE hosts.makejail
