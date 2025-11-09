@@ -1,8 +1,9 @@
 tags+: latest
 latest.arch: amd64
 latest.name: "brave"
-latest.timestamp.amd64: 1762417853
-latest.sum.amd64: 7fc5272e48ef02ce9d385f1aa4af0d37e4569b2d8a892a72b9f4dfb095faa219
-latest.size.amd64: 433636561
+latest.timestamp.amd64: 1762650818
+latest.sum.amd64: 5cbaafbd723764acbef2fe371ca37fc9cab5c22031ce0fc2d19d50d806da8683
+latest.size.amd64: 384878537
 latest.source.amd64: "https://images.all101bsd.download/brave/latest-amd64-image.appjail"
 latest.source.amd64+: "http://appjail.hpc.at/brave/latest-amd64-image.appjail"
+maintenance: "This image is uploading, please wait a moment and try again. If you are importing this image using a Makejail that has the '--<name>_ajspec' argument, you can use the 'reproduce' method to use 'appjail-reproduce'. See 'appjail-image(5)' for details."
