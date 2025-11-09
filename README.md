@@ -11,12 +11,14 @@ wikipedia.org/wiki/Brave_(web_browser)
 **Attention**: The following scripts assume that you have already configured AppJail to run with trusted users. If you have not already done so, read [Trusted Users](https://appjail.readthedocs.io/en/latest/trusted-users/). You should at least have `keepenv` in your `doas.conf(5)` to run the following scripts correctly.
 
 ```sh
+mkdir -p ~/appjail-volumes/brave/data
 appjail makejail -j brave -f gh+AppJail-makejails/brave \
     -o x11 \
     -o template=/usr/local/share/examples/appjail/templates/linux.conf \
     -o alias \
     -o virtualnet=":appjail0 default" \
-    -o nat
+    -o nat \
+    -o fstab="$HOME/appjail-volumes/brave/data brave-data <volumefs>"
 ```
 
 **Tip**: Read [Alias & Virtual Networks](https://appjail.readthedocs.io/en/latest/networking/virtual-networks/alias-and-virtual-networks/) to see how to create the `appjail0` interface.
@@ -52,6 +54,12 @@ appjail jail destroy -f brave
 * `brave_enable_webcamd` (default: `1`): Create a group named `webcamd` (GID: `145`) and add the `brave` user to it. This option also enable the following devices: `usb`, `usb/*`, `cuse*`, `video*`.
 * `brave_tz` (default: `auto`): Default time zone used by Brave. You can change this at run time through the `TZ` environment variable, but must be set each time `brave-appjail` is run. If set to `auto` the time zone is obtained using `/var/db/zoneinfo`.
 * `brave_ajspec` (default: `gh+AppJail-makejails/brave`): Entry point where the `appjail-ajspec(5)` file is located.
+
+### Volumes
+
+| Name        | Owner | Group | Perm | Type | Mountpoint        |
+| ----------- | ----- | ----- | ---- | ---- | ----------------- |
+| brave-data  | 1000  | 1000  |  -   |  -   | /var/spool/brave  |
 
 ## Tags
 

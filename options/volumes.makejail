@@ -1,0 +1,1 @@
+OPTION volume=brave-data mountpoint:/var/spool/brave owner:1000 group:1000

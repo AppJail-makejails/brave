@@ -4,6 +4,7 @@ OPTION osversion=focal
 OPTION type=linux+debootstrap
 OPTION linuxfs
 
+INCLUDE options/volumes.makejail
 INCLUDE options/devices.makejail
 
 CMD echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse" > /etc/apt/sources.list
