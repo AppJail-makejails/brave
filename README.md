@@ -11,7 +11,14 @@ wikipedia.org/wiki/Brave_(web_browser)
 **Attention**: The following scripts assume that you have already configured AppJail to run with trusted users. If you have not already done so, read [Trusted Users](https://appjail.readthedocs.io/en/latest/trusted-users/). You should at least have `keepenv` in your `doas.conf(5)` to run the following scripts correctly.
 
 ```sh
+# Create volume directory.
 mkdir -p ~/appjail-volumes/brave/data
+
+# This is only necessary if you have already used the Makejail before
+# adding the --brave_uid argument (see its description below).
+chown -R `id -u`:`id -u` ~/appjail-volumes/brave/data
+
+# Create the jail from this Makejail.
 appjail makejail -j brave -f gh+AppJail-makejails/brave \
     -o x11 \
     -o template=/usr/local/share/examples/appjail/templates/linux.conf \
