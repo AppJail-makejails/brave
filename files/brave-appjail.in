@@ -11,8 +11,6 @@ if [ ! -S "${PULSE_SOCKET}" ]; then
 	pactl load-module module-native-protocol-unix auth-anonymous=1 socket="${PULSE_SOCKET}"
 fi
 
-env DISPLAY="${DISPLAY:-%%DISPLAY%%}" xhost + > /dev/null || exit $?
-
 if ! appjail status -q "${BRAVE_JAIL:-%%JAILNAME%%}"; then
 	appjail start "${BRAVE_JAIL:-%%JAILNAME%%}" || exit $?
 fi

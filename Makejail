@@ -1,18 +1,21 @@
-INCLUDE options/image-options.makejail
-
 ARG brave_tag=latest
 ARG brave_display=:0
 ARG brave_enable_3d=1
 ARG brave_enable_webcamd=1
 ARG brave_tz=auto
 ARG brave_ajspec=gh+AppJail-makejails/brave
+ARG brave_uid=1000
+
+OPTION volume=brave-data mountpoint:/var/spool/brave owner:${brave_uid} group:${brave_uid}
+
+INCLUDE options/image-options.makejail
 
 FROM --entrypoint "${brave_ajspec}" brave:${brave_tag}
 
 INCLUDE pkgs-host.makejail
 INCLUDE hosts.makejail
 
-CMD useradd -d /var/spool/brave brave
+CMD useradd -u "${brave_uid}" -d /var/spool/brave brave
 CMD mkdir -p /var/spool/brave
 CMD chown brave:brave /var/spool/brave
 

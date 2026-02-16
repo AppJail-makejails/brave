@@ -18,7 +18,8 @@ appjail makejail -j brave -f gh+AppJail-makejails/brave \
     -o alias \
     -o virtualnet=":appjail0 default" \
     -o nat \
-    -o fstab="$HOME/appjail-volumes/brave/data brave-data <volumefs>"
+    -o fstab="$HOME/appjail-volumes/brave/data brave-data <volumefs>" \
+    -- --brave_uid `id -u`
 ```
 
 **Tip**: Read [Alias & Virtual Networks](https://appjail.readthedocs.io/en/latest/networking/virtual-networks/alias-and-virtual-networks/) to see how to create the `appjail0` interface.
@@ -54,12 +55,13 @@ appjail jail destroy -f brave
 * `brave_enable_webcamd` (default: `1`): Create a group named `webcamd` (GID: `145`) and add the `brave` user to it. This option also enable the following devices: `usb`, `usb/*`, `cuse*`, `video*`.
 * `brave_tz` (default: `auto`): Default time zone used by Brave. You can change this at run time through the `TZ` environment variable, but must be set each time `brave-appjail` is run. If set to `auto` the time zone is obtained using `/var/db/zoneinfo`.
 * `brave_ajspec` (default: `gh+AppJail-makejails/brave`): Entry point where the `appjail-ajspec(5)` file is located.
+* `brave_uid` (default: `1000`): Workaround for pulseaudio. UID and GID used by the user `brave` within the jail. This also affects the owner and group of the volume.
 
 ### Volumes
 
-| Name        | Owner | Group | Perm | Type | Mountpoint        |
-| ----------- | ----- | ----- | ---- | ---- | ----------------- |
-| brave-data  | 1000  | 1000  |  -   |  -   | /var/spool/brave  |
+| Name        | Owner          | Group          | Perm | Type | Mountpoint        |
+| ----------- | -------------- | -------------- | ---- | ---- | ----------------- |
+| brave-data  | `${brave_uid}` | `${brave_uid}` |  -   |  -   | /var/spool/brave  |
 
 ## Tags
 
