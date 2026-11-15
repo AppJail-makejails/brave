@@ -1,0 +1,12 @@
+CMD if [ -d "/compat/linux/system-fonts" ]; then \
+        unlink /compat/linux/etc/fonts; \
+        cp -a /usr/local/etc/fonts /compat/linux/etc/fonts; \
+        { \
+            echo -e '<?xml version="1.0"?>'; \
+            echo -e '<!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">'; \
+            echo -e '<fontconfig>'; \
+            echo -e '  <dir>/system-fonts</dir>'; \
+            echo -e '</fontconfig>'; \
+        } > /compat/linux/etc/fonts/conf.d/51-x11appjail.conf; \
+        chroot /compat/linux fc-cache -f; \
+    fi

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+__install_appname="brave"
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/uninstall.subr"

@@ -1,0 +1,3 @@
+
+mkdir -p -m 0755 -- "${X11APPJAIL_USERDIR}"
+set -- "$@" -o fstab="${X11APPJAIL_USERDIR} data <volumefs>"

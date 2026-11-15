@@ -1,0 +1,46 @@
+
+__dbus_rootdir="/var/run/x11appjail/dbus"
+__dbus_userdir="${__dbus_rootdir}/${X11APPJAIL_UID}"
+__dbus_datadir="${__dbus_userdir}/${X11APPJAIL_APPNAME}.${X11APPJAIL_PROFILE}"
+
+stop_dbus_session()
+{
+    stop_dbus "session"
+}
+
+stop_dbus_system()
+{
+    stop_dbus "system"
+}
+
+stop_dbus_all()
+{
+    stop_dbus_session
+    stop_dbus_system
+}
+
+stop_dbus()
+{
+    local pidfile="${__dbus_datadir}/${1}/pid"
+    local pid=
+
+    if run_as [ ! -f "${pidfile}" ]; then
+        return 0
+    fi
+
+    pid=`run_as head -1 -- "${pidfile}" 2> /dev/null || :`
+
+    if [ -z "${pid}" ] || ! run_as kill -0 "${pid}" > /dev/null 2>&1; then
+        return 0
+    fi
+
+    run_as kill -TERM "${pid}" > /dev/null 2>&1 || :
+    run_as pwait -or "${pid}" > /dev/null 2>&1 || :
+}
+
+run_as()
+{
+    mdo -u "${X11APPJAIL_UID}" -g "${X11APPJAIL_GID}" -G "${X11APPJAIL_OGID}" -- "$@"
+}
+
+stop_dbus_all

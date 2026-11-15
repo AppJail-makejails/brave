@@ -1,0 +1,16 @@
+#!/bin/sh
+
+__devices_enable_shm="true"
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/init.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/network.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/devices.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/ephemeral.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/labels.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/fonts.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/widevine.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/dbus-dirs.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/datadir.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/end.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/oci.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/create.subr"

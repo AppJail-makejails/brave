@@ -1,0 +1,19 @@
+
+if [ "${__dbus_system_mode}" != "none" ] || [ "${__dbus_session_mode}" != "none" ]; then
+    mkdir -p -- "${__dbus_rootdir}"
+    install -d -m 0700 -o "${X11APPJAIL_UID}" -g "${X11APPJAIL_GID}" -- \
+        "${__dbus_userdir}"
+    mkdir -p -- "${__dbus_datadir}"
+fi
+
+if [ "${__dbus_system_mode}" != "none" ]; then
+    install -d -m 0755 -o "${X11APPJAIL_UID}" -g "${X11APPJAIL_GID}" -- \
+        "${__dbus_system_dir}"
+    set -- "$@" -o fstab="${__dbus_system_dir} /var/run/dbus nullfs ro"
+fi
+
+if [ "${__dbus_session_mode}" != "none" ]; then
+    install -d -m 0755 -o "${X11APPJAIL_UID}" -g "${X11APPJAIL_GID}" -- \
+        "${__dbus_session_dir}"
+    set -- "$@" -o fstab="${__dbus_session_dir} /var/run/dbus-session nullfs ro"
+fi

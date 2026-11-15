@@ -1,0 +1,40 @@
+
+__devices_enable_shm="${__devices_enable_shm:-false}"
+
+set -- "$@" -o mount_devfs                                                                                                                  
+set -- "$@" -o device='include $devfsrules_hide_all'                                                                                        
+set -- "$@" -o device='include $devfsrules_unhide_basic'                                                                                    
+set -- "$@" -o device='include $devfsrules_unhide_login'
+
+if ${__devices_enable_shm}; then
+    set -- "$@" -o device='path shm unhide'
+    set -- "$@" -o device="path 'shm/*' unhide"
+fi
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/perms.subr"
+
+if ${__perms_allow_3d}; then
+    set -- "$@" -o device="path 'dri' unhide"
+    set -- "$@" -o device="path 'dri/*' unhide"
+    set -- "$@" -o device="path 'drm' unhide"
+    set -- "$@" -o device="path 'drm/*' unhide"
+    set -- "$@" -o device="path 'pci' unhide"
+    set -- "$@" -o device="path 'nvidia*' unhide"
+fi
+if ${__perms_allow_webcam}; then
+    set -- "$@" -o device="path 'cuse*' unhide"
+    set -- "$@" -o device="path 'video*' unhide"
+fi
+if ${__perms_allow_usb}; then
+    set -- "$@" -o device="path usb unhide"
+    set -- "$@" -o device="path 'usb/*' unhide"
+fi
+if ${__perms_allow_sound}; then
+    set -- "$@" -o device="path sndstat unhide"
+    set -- "$@" -o device="path mixer unhide"
+    set -- "$@" -o device="path 'mixer*' unhide"
+    set -- "$@" -o device="path dsp unhide"
+    set -- "$@" -o device="path 'dsp*' unhide"
+    set -- "$@" -o device="path speaker unhide"
+    set -- "$@" -o device="path 'speaker*' unhide"
+fi

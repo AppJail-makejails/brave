@@ -1,0 +1,71 @@
+
+set -e -o pipefail
+
+# jexec(8)
+JEXEC="${X11APPJAIL_BASEDIR}/usr/local/libexec/appjail/jexec/jexec"
+
+__dbus_stop=true
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/lib.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/dbus.subr"
+. "${X11APPJAIL_WORKDIR}/appjail.d/perms.subr"
+
+if ${__run_allow_entrypoint} && [ -n "${X11APPJAIL_ENTRYPOINT}" ]; then
+    __run_program="${X11APPJAIL_ENTRYPOINT}"
+fi
+
+if [ -n "${__run_program}" ]; then
+    set -- "${__run_program}" "$@"
+fi
+
+if ${__perms_allow_3d}; then
+    VGL_DISPLAY="egl"
+    ATTR="${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.virtualgl.display"
+
+    if x11appjail sys-attr check "${ATTR}" "${X11APPJAIL_UID}"; then
+        VGL_DISPLAY=`x11appjail sys-attr cat "${ATTR}" "${X11APPJAIL_UID}"`
+    fi
+
+    set -- /usr/local/VirtualGL/bin/vglrun -d "${VGL_DISPLAY}" "$@"
+fi
+
+set -- "${X11APPJAIL_JAIL}" "$@"
+
+if [ -n "${X11APPJAIL_DISPLAY}" ]; then
+    set -- -e "DISPLAY=${X11APPJAIL_DISPLAY}" "$@"
+fi
+
+if [ -d "${X11APPJAIL_WORKDIR}/env.d" ]; then
+    for ENV_FILE in "${X11APPJAIL_WORKDIR}/env.d"/*; do
+        if [ "${ENV_FILE}" = "${X11APPJAIL_WORKDIR}/env.d/*" ]; then
+            break
+        fi
+
+        ENV_NAME="${ENV_FILE##*/}"
+        ENV_VALUE=`cat -- "${ENV_FILE}"`
+
+        set -- -e "${ENV_NAME}=${ENV_VALUE}" "$@"
+    done
+fi
+
+if [ "${__dbus_system_mode}" != "none" ]; then
+    set -- -e "DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket" "$@"
+
+    start_dbus "dbus-system" "${__dbus_system_mode}" "${__dbus_system_pidfile}" "${X11APPJAIL_DBUS_SYSTEM_BUS_ADDRESS}" \
+        "${__dbus_system_sock}"
+fi
+
+if [ "${__dbus_session_mode}" != "none" ]; then
+    set -- -e "DBUS_SESSION_BUS_ADDRESS=unix:path=/var/run/dbus-session/session_bus_socket" "$@"
+
+    start_dbus "dbus-user" "${__dbus_session_mode}" "${__dbus_session_pidfile}" "${X11APPJAIL_DBUS_SESSION_BUS_ADDRESS}" \
+        "${__dbus_session_sock}"
+fi
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/env.subr"
+
+if [ -z "${__run_stdin}" ]; then
+    exec "${JEXEC}" -l -U noroot "$@"
+else
+    cat -- "${__run_stdin}" | "${JEXEC}" -l -U noroot "$@"
+fi

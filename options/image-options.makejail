@@ -1,7 +1,0 @@
-OPTION linuxfs
-OPTION resolv_conf
-OPTION tzdata
-OPTION overwrite=force
-OPTION start
-
-INCLUDE devices.makejail

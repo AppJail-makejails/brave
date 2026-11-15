@@ -1,0 +1,3 @@
+# Without devices, this is useless.
+CMD pw groupmod -n video -m noroot
+CMD pw groupadd -n webcamd -g 145 -M noroot

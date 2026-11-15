@@ -1,0 +1,11 @@
+
+__fonts_path="${__fonts_path:-/system-fonts}"
+
+if x11appjail sys-attr check mount.system-fonts; then
+    PREFIX=`x11appjail prefix`
+    FONTSDIR="${PREFIX}/share/fonts"
+
+    if [ -d "${FONTSDIR}" ]; then
+        set -- "$@" -o fstab="\"${FONTSDIR}\" ${__fonts_path} nullfs ro"
+    fi
+fi

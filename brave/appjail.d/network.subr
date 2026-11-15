@@ -1,0 +1,46 @@
+
+if [ -z "${__network_mode}" ]; then
+    if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.network.mode"; then
+        __network_mode=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.network.mode"`                                       
+    elif x11appjail sys-attr check network.mode; then
+        __network_mode=`x11appjail sys-attr cat network.mode`
+    fi
+fi
+
+__network_mode="${__network_mode:-none}"
+
+if [ "${__network_mode}" = "inherit" ]; then
+    set -- "$@" -o alias -o ip4_inherit -o ip6_inherit
+elif [ "${__network_mode}" = "virtualnet" ]; then
+    if [ "${APPJAIL_SELF_CONTAINED}" != 0 ]; then
+        err "Virtual Networks requires AppJail to be installed on the host."
+        exit 1
+    fi
+
+    if x11appjail sys-attr check network.virtualnet; then
+        VIRTUALNET=`x11appjail sys-attr cat network.virtualnet`
+    fi
+
+    set -- "$@" -o virtualnet="${VIRTUALNET}:<random> default" -o nat
+else
+    if [ "${__network_mode}" != "none" ]; then
+        warn "Invalid network mode '${__network_mode}', falling back to 'none'"
+    fi
+    set -- "$@" -o alias -o ip4_disable -o ip6_disable
+fi
+
+if [ "${__network_mode}" = "virtualnet" ]; then
+    SECGRP_TABLES=
+
+    if x11appjail sys-attr check network.security-group.tables; then
+        SECGRP_TABLES=`x11appjail sys-attr cat network.security-group.tables`
+    fi
+
+    if [ -n "${SECGRP_TABLES}" ]; then
+        set -- "$@" -o label="security-group:1"
+
+        for SECGRP_TABLE in ${SECGRP_TABLES}; do
+            set -- "$@" -o label="security-group.tables.${SECGRP_TABLE}:${SECGRP_TABLE}"
+        done
+    fi
+fi

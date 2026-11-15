@@ -1,0 +1,41 @@
+
+OCI_FROM=
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.oci.from"; then
+    OCI_FROM=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.oci.from"`
+elif x11appjail sys-attr check "oci.from"; then
+    OCI_FROM=`x11appjail sys-attr cat oci.from`
+fi
+if [ -n "${OCI_FROM}" ]; then
+    set -- "$@" --from "${OCI_FROM}"
+fi
+
+OCI_TAG=
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.oci.tag"; then
+    OCI_TAG=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.oci.tag"`
+elif x11appjail sys-attr check "oci.tag"; then
+    OCI_TAG=`x11appjail sys-attr cat oci.tag`
+fi
+if [ -n "${OCI_TAG}" ]; then
+    set -- "$@" --tag "${OCI_TAG}"
+fi
+
+OCI_PULL_POLICY=
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.oci.pull-policy"; then
+    OCI_PULL_POLICY=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.oci.pull-policy"`
+elif x11appjail sys-attr check "oci.pull-policy"; then
+    OCI_PULL_POLICY=`x11appjail sys-attr cat oci.pull-policy`
+fi
+if [ -n "${OCI_PULL_POLICY}" ]; then
+    OCI_PULL_POLICY_FALLBACK="newer"
+
+    case "${OCI_PULL_POLICY}" in
+        always|missing|never|newer) ;;
+        *)
+            warn "Invalid pull policy '${OCI_PULL_POLICY}', falling back to '${OCI_PULL_POLICY_FALLBACK}'"
+
+            OCI_PULL_POLICY="${OCI_PULL_POLICY_FALLBACK}"
+            ;;
+    esac
+
+    set -- "$@" --pull_policy "${OCI_PULL_POLICY}"
+fi

@@ -1,0 +1,68 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'r*'
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    name: Build and release an AppJail
+    env:
+      SIGN_KEY: ${{ secrets.X11APPJAIL_SIGN_KEY }}
+      REPO_NAME: ${{ github.event.repository.name }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build
+        id: assets
+        uses: vmactions/freebsd-vm@v1
+        with:
+          envs: 'SIGN_KEY REPO_NAME'
+          # Minimal production release for maximum compatibility.
+          release: '15.1'
+          usesh: true
+          sync: rsync
+          copyback: true
+          prepare: |
+            set -e -x
+            set -o pipefail
+
+            sed -i "" -e 's|quarterly|latest|g' /etc/pkg/FreeBSD.conf
+
+            export IGNORE_OSVERSION=yes
+
+            pkg update -f
+            pkg install -y git-tiny signify
+
+            git clone https://github.com/DtxdF/appscript.git
+            (cd appscript; SUEXEC=command ./make.sh)
+
+            git clone https://github.com/DtxdF/x11appjail.git
+            (cd x11appjail; SUEXEC=command ./make.sh)
+          run: |
+            trap 'rm -f sign_key.sec' EXIT
+
+            OLD_UMASK=`umask`
+            umask 077
+            printf "%s" "${SIGN_KEY}" | base64 -d > sign_key.sec
+            umask ${OLD_UMASK}
+
+            set -e -x
+            set -o pipefail
+
+            test -s sign_key.sec
+
+            appscript -v
+            x11appjail version
+            x11appjail build -LOS -s dtxdf@disroot.org:sign_key.sec "${REPO_NAME}"
+      - name: Release
+        id: release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: '*.AppJail'
+          generate_release_notes: true
+          make_latest: true
+          fail_on_unmatched_files: true

@@ -1,0 +1,12 @@
+OPTION label=load-kld:1
+OPTION label=load-kld.load-linux:linux
+OPTION label=load-kld.load-linux.module:linuxelf
+OPTION label=load-kld.load-linux64:linux64
+OPTION label=load-kld.load-linux64.module:linux64elf
+OPTION label=load-kld.load-pty:pty
+OPTION label=load-kld.load-fdescfs:fdescfs
+OPTION label=load-kld.load-linprocfs:linprocfs
+OPTION label=load-kld.load-linsysfs:linsysfs
+OPTION label=sysctl:1
+OPTION label=sysctl.elf64-fallback-brand:kern.elf64.fallback_brand=3
+OPTION label=sysctl.elf32-fallback-brand:kern.elf32.fallback_brand=3

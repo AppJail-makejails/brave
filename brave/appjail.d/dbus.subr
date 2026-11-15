@@ -1,0 +1,188 @@
+
+# D-Bus
+__dbus_rootdir="/var/run/x11appjail/dbus"
+__dbus_userdir="${__dbus_rootdir}/${X11APPJAIL_UID}"
+__dbus_datadir="${__dbus_userdir}/${X11APPJAIL_APPNAME}.${X11APPJAIL_PROFILE}"
+__dbus_clean_script="/var/run/x11appjail/clean/${X11APPJAIL_JAIL}"
+__dbus_stop=false
+# D-Bus (system)
+__dbus_system_addrfile="${__dbus_datadir}/system_bus_address"
+__dbus_system_dir="${__dbus_datadir}/system"
+__dbus_system_sock="${__dbus_system_dir}/system_bus_socket"
+__dbus_system_pidfile="${__dbus_system_dir}/pid"
+# D-Bus (session)
+__dbus_session_addrfile="${__dbus_datadir}/session_bus_address"
+__dbus_session_dir="${__dbus_datadir}/session"
+__dbus_session_sock="${__dbus_session_dir}/session_bus_socket"
+__dbus_session_pidfile="${__dbus_session_dir}/pid"
+
+__dbus_system_mode="${__dbus_system_mode:-none}"
+
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dbus-system" "${X11APPJAIL_UID}"; then
+    __dbus_system_mode=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dbus-system" "${X11APPJAIL_UID}"`
+fi
+
+case "${__dbus_system_mode}" in
+    none|filter|unfiltered) ;;
+    *)
+        warn "Invalid D-Bus (system) mode '${__dbus_system_mode}', falling back to 'none'"
+
+        __dbus_system_mode="none"
+        ;;
+esac
+
+__dbus_session_mode="${__dbus_session_mode:-filter}"
+
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dbus-user" "${X11APPJAIL_UID}"; then
+    __dbus_session_mode=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dbus-user" "${X11APPJAIL_UID}"`
+fi
+
+case "${__dbus_session_mode}" in
+    none|filter|unfiltered) ;;
+    *)
+        warn "Invalid D-Bus (session) mode '${__dbus_session_mode}', falling back to 'filter'"
+
+        __dbus_session_mode="filter"
+        ;;
+esac
+
+if ${__dbus_stop} && [ -x "${__dbus_clean_script}" ]; then
+    # xdg-dbus-proxy may be using an old and therefore invalid D-Bus
+    # address, causing applications to display error messages and fail
+    # when communicating via D-Bus.
+
+    __dbus_system_addr=
+    if [ -f "${__dbus_system_addrfile}" ]; then
+        __dbus_system_addr=$(
+            (lockf 9 || exit 1; head -1 -- "${__dbus_system_addrfile}") 9>> "${__dbus_system_addrfile}" || exit 1
+            exec 9>&-
+        )
+    fi
+
+    __dbus_session_addr=
+    if [ -f "${__dbus_session_addrfile}" ]; then
+        __dbus_session_addr=$(
+            (lockf 9 || exit 1; head -1 -- "${__dbus_session_addrfile}") 9>> "${__dbus_session_addrfile}" || exit 1
+            exec 9>&-
+        )
+    fi
+
+    #
+    # Terminating xdg-dbus-proxy will kill the child process.
+    #
+    if [ "${__dbus_system_addr}" != "${X11APPJAIL_DBUS_SYSTEM_BUS_ADDRESS}" ] ||\
+            [ "${__dbus_session_addr}" != "${X11APPJAIL_DBUS_SESSION_BUS_ADDRESS}" ]; then
+        "${__dbus_clean_script}"
+    fi
+
+    if [ -n "${X11APPJAIL_DBUS_SYSTEM_BUS_ADDRESS}" ]; then
+        (
+            lockf 9 || exit 1
+
+            printf "%s\n" "${X11APPJAIL_DBUS_SYSTEM_BUS_ADDRESS}" |\
+                tee "${__dbus_system_addrfile}" > /dev/null || exit 1
+        ) 9>> "${__dbus_system_addrfile}"
+        exec 9>&-
+    fi
+
+    if [ -n "${X11APPJAIL_DBUS_SESSION_BUS_ADDRESS}" ]; then
+        (
+            lockf 9 || exit 1
+
+            printf "%s\n" "${X11APPJAIL_DBUS_SESSION_BUS_ADDRESS}" |\
+                tee "${__dbus_session_addrfile}" > /dev/null || exit 1
+        ) 9>> "${__dbus_session_addrfile}"
+        exec 9>&-
+    fi
+fi
+
+start_dbus()
+{
+    local type="$1" mode="$2" pidfile="$3" address="$4" sock="$5"
+
+    set --
+
+    if [ "${mode}" = "filter" ]; then
+        set -- --filter "$@"
+    fi
+
+    if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dbus-system.log" "${X11APPJAIL_UID}"; then
+        set -- --log "$@"
+    fi
+
+    # Default policies that AppJails might apply by default.
+    if [ -d "${X11APPJAIL_WORKDIR}/dbus-policy.d/${type}" ]; then
+        local dbus_policy_file
+        for dbus_policy_file in "${X11APPJAIL_WORKDIR}/dbus-policy.d/${type}"/*; do
+            if [ "${dbus_policy_file}" = "${X11APPJAIL_WORKDIR}/dbus-policy.d/${type}/*" ]; then
+                break
+            fi
+
+            local dbus_policy_name="${dbus_policy_file##*/}"
+            local ignore_attr="${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.${type}.ignore.${dbus_policy_name}"
+
+            # Honor user's preferences by ignoring policies they do not want to be applied.
+            if x11appjail sys-attr check "${ignore_attr}" "${X11APPJAIL_UID}"; then
+                continue
+            fi
+
+            local param=
+
+            case "${dbus_policy_name}" in
+                 own.*) param="own" ;;
+                 call.*) param="call" ;;
+                 talk.*) param="talk" ;;
+                 see.*) param="see" ;;
+                 broadcast.*) param="broadcast" ;;
+                 *) continue ;;
+            esac
+
+            local value
+            value=`head -1 -- "${dbus_policy_file}"`
+
+            set -- "--${param}=${value}" "$@"
+        done
+    fi
+
+    get_user_attrs
+
+    local attr
+    for attr in ${USER_ATTRS}; do
+        local param=
+
+        case "${attr}" in
+             ${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.${type}.own.*) param="own" ;;
+             ${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.${type}.call.*) param="call" ;;
+             ${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.${type}.talk.*) param="talk" ;;
+             ${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.${type}.see.*) param="see" ;;
+             ${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.${type}.broadcast.*) param="broadcast" ;;
+             *) continue ;;
+        esac
+
+        local value
+        value=`x11appjail sys-attr cat "${attr}" "${X11APPJAIL_UID}"`
+
+        set -- "--${param}=${value}" "$@"
+    done
+
+    set -- xdg-dbus-proxy "${address}" "${sock}" "$@"
+
+    run_as daemon -f -p "${pidfile}" -- "$@" || :
+
+    local N=0
+
+    until [ -S "${sock}" ]; do
+        sleep 0.5
+
+        N=$((N+1))
+
+        if [ ${N} -ge 30 ]; then
+            err "D-Bus (${type}) proxy cannot be started: $*"
+            exit 1
+        fi
+    done
+
+    if [ "${type}" = "dbus-system" ]; then
+        chmod 0777 "${sock}"
+    fi
+}

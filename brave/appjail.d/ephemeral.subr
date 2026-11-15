@@ -1,0 +1,5 @@
+
+if [ -n "${X11APPJAIL_EPHEMERAL}" ] || \
+        x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.jail.ephemeral" "${X11APPJAIL_UID}"; then
+    set -- "$@" -o ephemeral
+fi

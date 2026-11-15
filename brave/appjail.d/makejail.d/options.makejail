@@ -1,0 +1,9 @@
+ARG pull_policy=newer
+
+OPTION start
+OPTION overwrite=force
+OPTION from=${from}:${tag}
+OPTION container=args:--pull=${pull_policy}
+OPTION volume=data mountpoint:/var/x11appjail/users/${puid}/${appname}.${profile} owner:${puid} group:${pgid}
+OPTION template=template.conf
+OPTION meta=x11appjail.exec.user:noroot

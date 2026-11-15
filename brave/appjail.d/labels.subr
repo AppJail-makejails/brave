@@ -1,0 +1,14 @@
+
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.labels"; then
+    LABELS=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.labels"`
+
+    for LABEL in ${LABELS}; do
+        if ! x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.labels.${LABEL}"; then
+            continue
+        fi
+
+        VALUE=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.labels.${LABEL}"`
+
+        set -- "$@" -o label="${LABEL}:${VALUE}"
+    done
+fi

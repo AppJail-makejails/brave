@@ -1,0 +1,51 @@
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/lib.subr"
+
+FLAG_SIZE="-resizeable"
+
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.screen" "${X11APPJAIL_UID}"; then
+    SCREEN_SIZE=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.screen" "${X11APPJAIL_UID}"`
+
+    if ! printf "%s" "${SCREEN_SIZE}" | grep -qEe '^[0-9]+x[0-9]+$'; then
+        warn "Invalid screen size '${SCREEN_SIZE}', falling back to '${FLAG_SIZE}'"
+    else
+        FLAG_SIZE="-screen ${SCREEN_SIZE}"
+    fi
+fi
+
+FLAG_DPI=
+
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dpi" "${X11APPJAIL_UID}"; then
+    DPI=`x11appjail sys-attr cat "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dpi" "${X11APPJAIL_UID}"`
+
+    if ! printf "%s" "${DPI}" | grep -qEe '^[1-9][0-9]*$'; then
+        warn "Invalid DPI '${DPI}', continuing without DPI..."
+    else
+        FLAG_DPI="-dpi ${DPI}"
+    fi
+fi
+
+XEPHYR_ARGS="\
+${FLAG_SIZE} \
+${FLAG_DPI} \
+-no-host-grab \
++extension RANDR \
++extension RENDER \
++extension GLX \
++extension XVideo \
++extension DOUBLE-BUFFER \
++extension SECURITY \
++extension DAMAGE \
++extension X-Resource \
+-extension XINERAMA \
++extension MIT-SHM \
+-nolisten tcp \
+-title \"${X11APPJAIL_TITLE}\""
+
+exec "${APPJAIL}" x11 "${X11APPJAIL_JAIL}" \
+    exec_start="openbox-session" \
+    exec_user="noroot" \
+    xephyr_user="${X11APPJAIL_UID}" \
+    xephyr_args="${XEPHYR_ARGS}" \
+    xauthority="${XAUTHORITY}" \
+    display="${X11APPJAIL_HOST_DISPLAY}"

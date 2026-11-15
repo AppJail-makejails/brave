@@ -1,0 +1,82 @@
+
+__perms_enable_3d="${__perms_enable_3d:-true}"
+__perms_enable_webcam="${__perms_enable_webcam:-true}"
+__perms_enable_usb="${__perms_usb:-true}"
+__perms_enable_sound="${__perms_sound:-true}"
+
+__perms_allow_3d=false
+__perms_allow_webcam=false
+__perms_allow_usb=false
+__perms_allow_sound=false
+
+if x11appjail sys-attr check users.${X11APPJAIL_UID}.perms; then
+    PERMS=`x11appjail sys-attr cat users.${X11APPJAIL_UID}.perms`
+
+    for PERM in ${PERMS}; do
+        if [ "${PERM}" = "enable_3d" ]; then
+            if ! ${__perms_enable_3d}; then
+                continue
+            fi
+
+            if ${__perms_allow_3d}; then
+                continue
+            fi
+
+            PERM_ATTR="${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.allow.enable_3d"
+
+            if ! x11appjail sys-attr check "${PERM_ATTR}" "${X11APPJAIL_UID}"; then
+                continue
+            fi
+
+            __perms_allow_3d=true
+        elif [ "${PERM}" = "webcam" ]; then
+            if ! ${__perms_enable_webcam}; then
+                continue
+            fi
+
+            if ${__perms_allow_webcam}; then
+                continue
+            fi
+
+            PERM_ATTR="${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.allow.webcam"
+
+            if ! x11appjail sys-attr check "${PERM_ATTR}" "${X11APPJAIL_UID}"; then
+                continue
+            fi
+
+            __perms_allow_webcam=true
+        elif [ "${PERM}" = "usb" ]; then
+            if ! ${__perms_enable_usb}; then
+                continue
+            fi
+
+            if ${__perms_allow_usb}; then
+                continue
+            fi
+
+            PERM_ATTR="${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.allow.usb"
+
+            if ! x11appjail sys-attr check "${PERM_ATTR}" "${X11APPJAIL_UID}"; then
+                continue
+            fi
+
+            __perms_allow_usb=true
+        elif [ "${PERM}" = "sound" ]; then
+            if ! ${__perms_enable_sound}; then
+                continue
+            fi
+
+            if ${__perms_allow_sound}; then
+                continue
+            fi
+
+            PERM_ATTR="${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.allow.sound"
+
+            if ! x11appjail sys-attr check "${PERM_ATTR}" "${X11APPJAIL_UID}"; then
+                continue
+            fi
+
+            __perms_allow_sound=true
+        fi
+    done
+fi

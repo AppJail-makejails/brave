@@ -1,0 +1,15 @@
+#!/bin/sh
+
+__run_program=
+
+sysctl kern.ipc.shm_allow_removed=1 > /dev/null
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/perms.subr"
+
+if ${__perms_allow_3d}; then
+    set -- brave --use-angle=vulkan --ignore-gpu-blocklist "$@"
+else
+    set -- brave --ignore-gpu-blocklist "$@"
+fi
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/run.subr"

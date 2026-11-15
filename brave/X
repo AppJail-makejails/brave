@@ -1,0 +1,3 @@
+#!/bin/sh
+
+. "${X11APPJAIL_WORKDIR}/appjail.d/X.subr"

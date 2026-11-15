@@ -1,0 +1,35 @@
+
+USER_ATTRS=
+
+get_user_attrs()
+{
+    if [ -z "${USER_ATTRS}" ]; then
+        USER_ATTRS=`x11appjail sys-attr ls "${X11APPJAIL_UID}"`
+    fi
+}
+
+warn()
+{
+    printf "##!> %s\n" "$*" >&2
+}
+
+err()
+{
+    printf "###> %s\n" "$*" >&2
+}
+
+info()
+{
+    printf "===> %s\n" "$*" >&2
+}
+
+debug()
+{
+    printf "======> %s\n" "$*" >&2
+}
+
+run_as()
+{
+    HOME="${X11APPJAIL_HOMEDIR}" \
+        mdo -u "${X11APPJAIL_UID}" -g "${X11APPJAIL_GID}" -G "${X11APPJAIL_OGID}" -- "$@"
+}

@@ -1,0 +1,6 @@
+
+set -- "$@" --
+set -- "$@" --puid "${X11APPJAIL_UID}"
+set -- "$@" --pgid "${X11APPJAIL_GID}"
+set -- "$@" --appname "${X11APPJAIL_APPNAME}"
+set -- "$@" --profile "${X11APPJAIL_PROFILE}"
