@@ -1,0 +1,4 @@
+CMD if [ -d "/widevine" ]; then \
+        install -d -m 755 /usr/local/lib; \
+        cp -a /widevine/opt/google/chrome/WidevineCdm /usr/local/lib; \
+    fi

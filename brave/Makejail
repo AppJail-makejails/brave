@@ -9,3 +9,4 @@ INCLUDE appjail.d/makejail.d/fonts.makejail
 INCLUDE appjail.d/makejail.d/create-user.makejail
 INCLUDE appjail.d/makejail.d/groups.makejail
 INCLUDE appjail.d/makejail.d/linux.makejail
+INCLUDE appjail.d/makejail.d/widevine.makejail
