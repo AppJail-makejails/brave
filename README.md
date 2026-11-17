@@ -205,6 +205,7 @@ The above assumes that the jail is allowed to connect to `1.1.1.1` and send ICMP
 | `network.security-group.tables` | If `network.mode` is set to `virtualnet`, this attribute specifies a space-separated list of `pf(4)` tables to which the jail will be added using Security Group hooks.<br><br>If you are going to add additional labels related to Security Groups, do not include `security-group:1`, as this attribute already include it.<br><br>See also: https://github.com/DtxdF/AppJail/wiki/filter<br>|
 | `mount.system-fonts` | Read-only mounts the fonts system inside the jail, configure Fontconfig, and rebuild the font cache.|
 | `network.virtualnet` | Specify the virtual network to be used when `network.mode` is set to `virtualnet`. If not specified, no virtual network is defined, so the default one is used.|
+| `widevine.accept.license` | Install Widevine CDM plugin.|
 
 ## OCI Configuration
 
