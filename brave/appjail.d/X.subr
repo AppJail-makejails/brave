@@ -1,6 +1,7 @@
 
 . "${X11APPJAIL_WORKDIR}/appjail.d/lib.subr"
 
+JEXEC="${X11APPJAIL_BASEDIR}/usr/local/libexec/appjail/jexec/jexec"
 FLAG_SIZE="-resizeable"
 
 if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.screen" "${X11APPJAIL_UID}"; then
@@ -22,6 +23,12 @@ if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.dpi" "
         warn "Invalid DPI '${DPI}', continuing without DPI..."
     else
         FLAG_DPI="-dpi ${DPI}"
+    fi
+fi
+
+if x11appjail sys-attr check "${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.nofullscreen" "${X11APPJAIL_UID}"; then
+    if "${JEXEC}" -l "${X11APPJAIL_JAIL}" [ ! -f "/usr/local/etc/devilspie2/nofullscreen" ]; then
+        "${JEXEC}" -l "${X11APPJAIL_JAIL}" touch "/usr/local/etc/devilspie2/nofullscreen"
     fi
 fi
 

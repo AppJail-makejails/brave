@@ -170,37 +170,38 @@ The above assumes that the jail is allowed to connect to `1.1.1.1` and send ICMP
 
 | Name | Description |
 | --- | --- |
-| `<appname>:<profile>.dbus-system` | Configure the system bus mode. There are three modes:<br><br>1. `filter`: Enables filtering.<br>2. `unfiltered`: Disables filtering. This mode is insecure and is recommended only for development.<br>3. `none`: Completely disables the session bus. This is the default mode unless explicitly stated otherwise.<br>|
-| `<appname>:<profile>.dbus-system.<policy>.*` | Apply a policy or rule to the system bus, where `<type>` can be `own`, `call`, `talk`, `see`, and `broadcast`. See `xdg-dbus-proxy(1)` for details.|
-| `<appname>:<profile>.dbus-user` | Configure the session bus mode. There are three modes:<br><br>1. `filter`: Enables filtering. This is the default mode unless explicitly stated otherwise.<br>2. `unfiltered`: Disables filtering. This mode is insecure and is recommended only for development.<br>3. `none`: Completely disables the session bus.<br>|
-| `<appname>:<profile>.dbus-user.<policy>.*` | Apply a policy or rule to the session bus, where `<type>` can be `own`, `call`, `talk`, `see`, and `broadcast`. See `xdg-dbus-proxy(1)` for details.|
-| `<appname>:<profile>.dpi` | Sets the resolution for all screens, in dots per inch. By default, no DPI is set.|
-| `<appname>:<profile>.allow.enable_3d` | This permission will execute the application using VirtualGL and make hardware acceleration-related devices visible.|
-| `<appname>:<profile>.env.<label>.*` | User-defined custom environment variables. `<label>` is an arbitrary name, as it is not part of the environment. The value of the attribute will be the environment variable with its value in the format `<name>=<value>`.|
-| `<appname>:<profile>.jail.ephemeral` | Mark the jail as ephemeral. See `ephemeral` option in `appjail-quick(1)` for details.<br><br>Although the jail may be destroyed, its data is preserved in the user directory (see `${X11APPJAIL_USERDIR}` in `x11appjail-spec(5)`).<br>|
-| `<appname>:<profile>.dbus-user.ignore.broadcast.portal` | If this attribute exists, `org.freedesktop.portal.*=@/org/freedesktop/portal/*` will not be applied in the `broadcast` rule.|
-| `<appname>:<profile>.dbus-user.ignore.call.portal` | If this attribute exists, `org.freedesktop.portal.*=*` will not be applied in the `call` rule.|
+| `<appspec>.dbus-system` | Configure the system bus mode. There are three modes:<br><br>1. `filter`: Enables filtering.<br>2. `unfiltered`: Disables filtering. This mode is insecure and is recommended only for development.<br>3. `none`: Completely disables the session bus. This is the default mode unless explicitly stated otherwise.<br>|
+| `<appspec>.dbus-system.<policy>.*` | Apply a policy or rule to the system bus, where `<type>` can be `own`, `call`, `talk`, `see`, and `broadcast`. See `xdg-dbus-proxy(1)` for details.|
+| `<appspec>.dbus-user` | Configure the session bus mode. There are three modes:<br><br>1. `filter`: Enables filtering. This is the default mode unless explicitly stated otherwise.<br>2. `unfiltered`: Disables filtering. This mode is insecure and is recommended only for development.<br>3. `none`: Completely disables the session bus.<br>|
+| `<appspec>.dbus-user.<policy>.*` | Apply a policy or rule to the session bus, where `<type>` can be `own`, `call`, `talk`, `see`, and `broadcast`. See `xdg-dbus-proxy(1)` for details.|
+| `<appspec>.dpi` | Sets the resolution for all screens, in dots per inch. By default, no DPI is set.|
+| `<appspec>.allow.enable_3d` | This permission will execute the application using VirtualGL and make hardware acceleration-related devices visible.|
+| `<appspec>.env.<label>.*` | User-defined custom environment variables. `<label>` is an arbitrary name, as it is not part of the environment. The value of the attribute will be the environment variable with its value in the format `<name>=<value>`.|
+| `<appspec>.jail.ephemeral` | Mark the jail as ephemeral. See `ephemeral` option in `appjail-quick(1)` for details.<br><br>Although the jail may be destroyed, its data is preserved in the user directory (see `${X11APPJAIL_USERDIR}` in `x11appjail-spec(5)`).<br>|
+| `<appspec>.dbus-user.ignore.broadcast.portal` | If this attribute exists, `org.freedesktop.portal.*=@/org/freedesktop/portal/*` will not be applied in the `broadcast` rule.|
+| `<appspec>.dbus-user.ignore.call.portal` | If this attribute exists, `org.freedesktop.portal.*=*` will not be applied in the `call` rule.|
 | `<appname>:<profile>.dbus-user.ignore.own.mpris` | If this attribute exists, `org.mpris.MediaPlayer2.brave.*` will not be applied in the `own` policy.|
-| `<appname>:<profile>.screen` | Screen size. If this is not set, allow the window to be resized.|
-| `<appname>:<profile>.allow.sound` | This permission will make sound-related devices visible.|
-| `<appname>:<profile>.allow.usb` | This permission will make usb-related devices visible.|
-| `<appname>:<profile>.virtualgl.display` | If the user has the `enable_3d` permission, this specifies the display or EGL device to be used for 3D rendering. Since using EGL is the only logical choice for this project, the default value is `egl`. In multi-GPU environments, it is possible to specify a particular device.|
-| `<appname>:<profile>.allow.webcam` | This permission will make webcam-related devices visible.|
+| `<appspec>.nofullscreen` | Prevents devilspie2 from setting windows to full screen when they can be maximized.|
+| `<appspec>.screen` | Screen size. If this is not set, allow the window to be resized.|
+| `<appspec>.allow.sound` | This permission will make sound-related devices visible.|
+| `<appspec>.allow.usb` | This permission will make usb-related devices visible.|
+| `<appspec>.virtualgl.display` | If the user has the `enable_3d` permission, this specifies the display or EGL device to be used for 3D rendering. Since using EGL is the only logical choice for this project, the default value is `egl`. In multi-GPU environments, it is possible to specify a particular device.|
+| `<appspec>.allow.webcam` | This permission will make webcam-related devices visible.|
 
 #### System Attributes
 
 | Name | Description |
 | --- | --- |
-| `<appname>:<profile>.labels` | A space-separated list of label names.|
+| `<appspec>.labels` | A space-separated list of label names.|
 | `network.mode` | Network mode. Default is `none`.<br><br>There are three modes:<br><br>1. `virtualnet`: This option is recommended, as it provides isolation and allows a more fine-grained control. It's necessary to install and configure AppJail on the host, as specified in the "[Getting Started](https://appjail.readthedocs.io/en/latest/getting-started/)" guide.<br>2. `inherit`: This mode does not provide network isolation. From a networking perspective, it is exactly the same as running the application on the host.<br>3. `none`: Completely disable the network stack.<br>|
 | `oci.from` | Location of OCI image.|
 | `oci.pull-policy` | Pull policy. Default is `newer`.<br><br>See `--pull` in `buildah-from(1)` for details.<br>|
 | `oci.tag` | OCI image tag.|
-| `<appname>:<profile>.labels.<label>` | The value of the label.|
-| `<appname>:<profile>.network.mode` | Same as `network.mode`, but by application. It takes precedence when defined.|
-| `<appname>:<profile>.oci.from` | Same as `oci.from`, but by application. It takes precedence when defined.|
-| `<appname>:<profile>.oci.pull-policy` | Same as `oci.pull-policy`, but by application. It takes precedence when defined.|
-| `<appname>:<profile>.oci.tag` | Same as `oci.tag`, but by application. It takes precedence when defined.|
+| `<appspec>.labels.<label>` | The value of the label.|
+| `<appspec>.network.mode` | Same as `network.mode`, but by application. It takes precedence when defined.|
+| `<appspec>.oci.from` | Same as `oci.from`, but by application. It takes precedence when defined.|
+| `<appspec>.oci.pull-policy` | Same as `oci.pull-policy`, but by application. It takes precedence when defined.|
+| `<appspec>.oci.tag` | Same as `oci.tag`, but by application. It takes precedence when defined.|
 | `users.<uid>.perms` | A space-separated list of "permissions" granted to a specific user.<br><br>The implemented "permissions" are presented below:<br><br>* `enable_3d`<br>* `webcam`<br>* `usb`<br>* `sound`<br><br>For a description of any of them, consult `${X11APPJAIL_APPNAME}:${X11APPJAIL_PROFILE}.allow.<permission>` in the "[User Attributes](#user-attributes)" section.<br>|
 | `network.security-group.tables` | If `network.mode` is set to `virtualnet`, this attribute specifies a space-separated list of `pf(4)` tables to which the jail will be added using Security Group hooks.<br><br>If you are going to add additional labels related to Security Groups, do not include `security-group:1`, as this attribute already include it.<br><br>See also: https://github.com/DtxdF/AppJail/wiki/filter<br>|
 | `mount.system-fonts` | Read-only mounts the fonts system inside the jail, configure Fontconfig, and rebuild the font cache.|
