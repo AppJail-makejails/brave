@@ -85,6 +85,53 @@ Note that if you have already started the AppJail, in order for the changes to t
 ```console
 $ x11appjail destroy-jail brave
 ```
+### Keyboard and mouse reference (Openbox)
+
+The Openbox environment uses the following key and mouse bindings. They are
+defined in Openbox's `rc.xml`.
+
+> **Note:** `W` means the **Super** key (usually the Windows key), and `S`
+> means **Shift**.
+
+#### Keyboard bindings
+
+| Binding | Action |
+|---------|--------|
+| `W-q` | Close the active window (`Close`) |
+| `W-S-q` | Exit Openbox with confirmation (`Exit` with `prompt=yes`) |
+| `W-f` | Toggle fullscreen (`ToggleFullscreen`) |
+| `W-w` | Go to the next window (`NextWindow`) |
+| `W-S-w` | Go to the previous window (`PreviousWindow`) |
+| `W-l` | Show the combined client list menu (`ShowMenu > client-list-combined-menu`) |
+
+#### Mouse bindings
+
+| Context | Button / action | Resulting action |
+|---------|-----------------|------------------|
+| **Frame** (window frame) | `W-Left` (Press) | Focus and raise the window (`Focus`, `Raise`) |
+| | `W-Left` (Click) | Unshade the window (`Unshade`) |
+| | `W-Left` (Drag) | Move the window (`Move`) |
+| | `W-Right` (Press) | Focus, raise, and unshade (`Focus`, `Raise`, `Unshade`) |
+| | `W-Right` (Drag) | Resize the window (`Resize`) |
+| | `W-Middle` (Press) | Lower the window to the bottom (`Lower`, `FocusToBottom`, `Unfocus`) |
+| **Titlebar** | `Left` (Drag) | Move the window (`Move`) |
+| | `Left` (DoubleClick) | Toggle maximize (`ToggleMaximize`) |
+| | `Up` (Click) | Shade the window if it is not shaded (`Shade` conditional) |
+| | `Down` (Click) | Unshade the window if it is shaded (`Unshade` conditional) |
+| **Titlebar Top Right Bottom Left TLCorner TRCorner BRCorner BLCorner** | `Left` (Press) | Focus, raise, and unshade (`Focus`, `Raise`, `Unshade`) |
+| | `Middle` (Press) | Lower to the bottom (`Lower`, `FocusToBottom`, `Unfocus`) |
+| | `Right` (Press) | Focus, raise, and show the client menu (`ShowMenu > client-menu`) |
+| **Top** (top edge) | `Left` (Drag) | Resize from the top edge (`Resize` edge `top`) |
+| **Left** (left edge) | `Left` (Drag) | Resize from the left edge (`Resize` edge `left`) |
+| **Right** (right edge) | `Left` (Drag) | Resize from the right edge (`Resize` edge `right`) |
+| **Bottom** (bottom edge) | `Left` (Drag) | Resize from the bottom edge (`Resize` edge `bottom`) |
+| | `Right` (Press) | Focus, raise, and show the client menu (`ShowMenu > client-menu`) |
+| **TRCorner BRCorner TLCorner BLCorner** (corners) | `Left` (Press) | Focus, raise, and unshade (`Focus`, `Raise`, `Unshade`) |
+| | `Left` (Drag) | Resize (`Resize`) |
+
+> **Note:** `W-Left`, `W-Right`, and `W-Middle` mean that you must hold the
+> **Super** key while clicking the left, right, or middle mouse button,
+> respectively.
 ### User Permissions
 
 By default, the jail lacks the necessary devices for sound, the webcam, hardware acceleration, etc., to work as expected. To achieve this, the system operator must grant the user certain permissions, and the user must allow the jail to be created with the specific permissions required for that session. This is implemented using attributes:
