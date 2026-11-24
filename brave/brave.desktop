@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Name=Brave
+Name=Brave (AppJail:%%PROFILE%%)
 GenericName=Web Browser
 Comment=Brave web browser based on Chromium
 Icon=%%ICON%%
